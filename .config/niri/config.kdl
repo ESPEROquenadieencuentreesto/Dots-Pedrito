@@ -17,6 +17,8 @@ input {
 	    		layout "us"
         	}
         numlock
+	repeat-delay 250
+        repeat-rate 35
     }
     touchpad {
     	tap
@@ -37,7 +39,7 @@ output "eDP-1" {
 }
 
 layout {
-    gaps 10
+    gaps 8
     center-focused-column "never"
     background-color "transparent"    
     preset-column-widths {
@@ -67,11 +69,11 @@ animations {
         spring damping-ratio=1.0 stiffness=1000 epsilon=0.0001
     }
     screenshot-ui-open {
-        duration-ms 500
+        duration-ms 200
         curve "ease-out-quad"
     }
     window-close{
-	duration-ms 800
+	duration-ms 500
 	curve "ease-out-cubic"
 	custom-shader r"
 	vec4 hash4(vec2 i) {
@@ -142,7 +144,7 @@ animations {
     }
 
     window-open {
-        duration-ms 800
+        duration-ms 500
         curve "ease-out-cubic"
         custom-shader r"
 	vec4 hash4(vec2 i) {
@@ -267,6 +269,8 @@ binds {
     Mod+Shift+L { spawn "firefox"; }    
     Mod+Shift+E { spawn "wlogout"; }
     Mod+Shift+Z { spawn "sudo" "zzz"; }
+    Mod+Up { spawn "mpc" "seek" "+5"; }
+    Mod+Down { spawn "mpc" "seek" "-5"; }
     
     Super+Alt+S allow-when-locked=true hotkey-overlay-title=null { spawn-sh "pkill orca || exec orca"; }
 
@@ -286,8 +290,6 @@ binds {
     Mod+Q repeat=false { close-window; }
 
     Mod+Left  { focus-column-left; }
-    Mod+Down  { focus-window-down; }
-    Mod+Up    { focus-window-up; }
     Mod+Right { focus-column-right; }
     Mod+H     { focus-column-left; }
     Mod+J     { focus-window-down; }

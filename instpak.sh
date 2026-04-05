@@ -40,6 +40,7 @@ PACKAGES=(
     "swaybg"
     "fzf"
     "curl"
+    "mpc"
 )
 
 install_void() {
