@@ -1,0 +1,10 @@
+Los servicios:
+
+agetty-tty1
+dbus
+iwd
+seatd
+tlp
+udevd 
+
+Sin los logs, para que los quiero

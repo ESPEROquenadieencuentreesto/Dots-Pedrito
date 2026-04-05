@@ -1,0 +1,24 @@
+
+[window]
+padding = { x = 12, y = 12 }
+dynamic_padding = true
+opacity = 1.0 
+
+[font]
+
+normal = { family = "VCR OSD Mono", style = "Regular" }
+size = 12.0
+
+[scrolling]
+history = 500
+multiplier = 3
+
+[colors.primary]
+background = "#000000"
+foreground = "#ffffff"
+
+[selection]
+save_to_clipboard = true
+
+[cursor]
+style = { shape = "Block", blinking = "Always" }

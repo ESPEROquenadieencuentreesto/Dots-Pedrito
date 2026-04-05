@@ -1,0 +1,450 @@
+environment {
+    QT_QPA_PLATFORM "wayland"
+    QT_QPA_PLATFORMTHEME "qt5c5:qt6ct"
+    SDL_VIDEODRIVER "wayland"
+    _JAVA_AWT_NONREPARENTING "1"
+    DISPLAY "0"
+    WEBKIT_DISABLE_COMPOSITING_MODE "1"
+    WEBKIT_FORCE_SANDBOX "0"
+    GDK_BACKEND "wayland"
+    MOZ_ENABLE_WAYLAND "1"
+    SDL_VIDEODRIVER "wayland"
+    ELECTRON_OZONE_PLATFORM_HINT "wayland"
+}
+
+input {
+
+    mod-key "Alt"
+
+    keyboard {
+        	xkb {
+	    		layout "us"
+        	}
+
+        numlock
+    }
+    
+
+    touchpad {
+        tap
+        dwt
+        natural-scroll
+    }
+
+    mouse {
+    }
+
+    trackpoint {
+    }
+	warp-mouse-to-focus
+
+}
+
+output "eDP-1" {
+
+    mode "1920x1080@47.999"
+    scale 1
+    transform "normal"
+    position x=1280 y=0
+
+}
+
+layout {
+
+    gaps 10
+    center-focused-column "never"
+    background-color "transparent"    
+
+    preset-column-widths {
+        proportion 0.33333
+        proportion 0.5
+        proportion 0.66667
+    }
+
+    focus-ring {
+	off
+        width 0
+        inactive-color "#505050"
+    }
+
+    border {
+        off
+        width 0
+        active-color "#ffc87f"
+        inactive-color "#505050"
+
+        urgent-color "#9b0000"
+    }
+
+    struts {
+    }
+}
+
+cursor {
+    hide-when-typing
+    hide-after-inactive-ms 1000
+}
+
+animations {
+
+    slowdown 2.0
+    workspace-switch {
+        spring damping-ratio=1.0 stiffness=1000 epsilon=0.0001
+    }
+
+    screenshot-ui-open {
+        duration-ms 500
+        curve "ease-out-quad"
+    }
+
+    window-close{
+	duration-ms 800
+	curve "ease-out-cubic"
+	custom-shader r"
+vec4 hash4(vec2 i) {
+    vec4 p = vec4(
+        dot(i,               vec2(127.1, 311.7)),
+        dot(i + vec2(1.,0.), vec2(127.1, 311.7)),
+        dot(i + vec2(0.,1.), vec2(127.1, 311.7)),
+        dot(i + vec2(1.,1.), vec2(127.1, 311.7))
+    );
+    return fract(sin(p) * 43758.5453);
+}
+
+float noise(vec2 p) {
+    vec2 i = floor(p);
+    vec2 f = fract(p);
+    f = f * f * (3.0 - 2.0 * f);
+    vec4 h = hash4(i);
+    return mix(mix(h.x, h.y, f.x),
+               mix(h.z, h.w, f.x), f.y);
+}
+
+float fbm(vec2 p) {
+    float v  = 0.5    * noise(p);          p *= 2.0;
+          v += 0.25   * noise(p);          p *= 2.0;
+          v += 0.125  * noise(p);          p *= 2.0;
+          v += 0.0625 * noise(p);
+    return v;
+}
+
+vec4 close_color(vec3 coords_geo, vec3 size_geo) {
+    float p    = niri_clamped_progress;
+    vec2  uv   = coords_geo.xy;
+    float seed = niri_random_seed * 100.0;
+
+    float particle_noise = fbm(uv * 8.0 + seed);
+
+    vec4  fh         = hash4(floor(uv * 60.0 + seed));
+    float fine_noise = fh.x;
+
+    float direction_bias     = uv.x * 0.4 + (1.0 - uv.y) * 0.4;
+    float dissolve_threshold = particle_noise * 0.5
+                             + fine_noise     * 0.2
+                             + direction_bias;
+
+    float remain          = 1.0 - smoothstep(dissolve_threshold - 0.15,
+                                             dissolve_threshold + 0.15,
+                                             p * 1.6);
+    float dissolved_amount = 1.0 - remain;
+
+    const vec2 DRIFT_DIR  = vec2(0.70710678, -0.70710678);
+    float drift_strength  = dissolved_amount * p * p * 0.12;
+
+    vec4  dh         = hash4(floor(uv * 40.0 + seed + 7.0));
+    float drift_rand = dh.x;
+
+    vec2 drift_offset = DRIFT_DIR * (drift_strength * (0.6 + drift_rand * 0.8));
+
+    float turb     = fbm(uv * 12.0 + seed + p * 4.0) - 0.5;
+    drift_offset  += vec2(turb, turb * 0.7) * (dissolved_amount * p * 0.03);
+
+    vec2 displaced_uv = uv + drift_offset;
+
+    vec3 tex_coords  = niri_geo_to_tex * vec3(displaced_uv, 1.0);
+    vec4 color       = texture2D(niri_tex, tex_coords.st);
+
+    float dust_life  = smoothstep(0.0, 0.3, dissolved_amount) *
+                       smoothstep(1.0, 0.5, dissolved_amount);
+    float dust_alpha = dust_life * (1.0 - p) * 0.6;
+
+    vec3 base_tex    = niri_geo_to_tex * vec3(uv, 1.0);
+    vec4 base_color  = texture2D(niri_tex, base_tex.st);
+
+    vec4 final_color = base_color * remain + color * dust_alpha;
+
+    float tail = smoothstep(1.0, 0.85, p);
+    return final_color * tail;
+}
+	"
+}
+
+    window-open {
+        duration-ms 800
+        curve "ease-out-cubic"
+        custom-shader r"
+vec4 hash4(vec2 i) {
+    vec4 p = vec4(
+        dot(i,               vec2(127.1, 311.7)),
+        dot(i + vec2(1.,0.), vec2(127.1, 311.7)),
+        dot(i + vec2(0.,1.), vec2(127.1, 311.7)),
+        dot(i + vec2(1.,1.), vec2(127.1, 311.7))
+    );
+    return fract(sin(p) * 43758.5453);
+}
+
+float noise(vec2 p) {
+    vec2 i = floor(p);
+    vec2 f = fract(p);
+    f = f * f * (3.0 - 2.0 * f);
+    vec4 h = hash4(i);
+    return mix(mix(h.x, h.y, f.x),
+               mix(h.z, h.w, f.x), f.y);
+}
+
+float fbm(vec2 p) {
+    float v  = 0.5    * noise(p);          p *= 2.0;
+          v += 0.25   * noise(p);          p *= 2.0;
+          v += 0.125  * noise(p);          p *= 2.0;
+          v += 0.0625 * noise(p);
+    return v;
+}
+
+vec4 open_color(vec3 coords_geo, vec3 size_geo) {
+    float p    = niri_clamped_progress;
+    vec2  uv   = coords_geo.xy;
+    float seed = niri_random_seed * 100.0;
+
+    float particle_noise = fbm(uv * 8.0 + seed);
+
+    vec4  fh         = hash4(floor(uv * 60.0 + seed));
+    float fine_noise = fh.x;
+
+    float direction_bias      = (1.0 - uv.x) * 0.4 + uv.y * 0.4;
+    float dissolve_threshold  = particle_noise * 0.5
+                              + fine_noise     * 0.2
+                              + direction_bias;
+
+    float reveal = smoothstep(dissolve_threshold - 0.15,
+                              dissolve_threshold + 0.15,
+                              p * 1.6);
+
+    float rp           = 1.0 - p;
+    float drift        = rp * rp;
+
+    const vec2 DRIFT_DIR = vec2(0.70710678, -0.70710678);
+    float drift_amount   = drift * 0.08 * (particle_noise + fine_noise * 0.5);
+    vec2  displaced_uv   = uv + DRIFT_DIR * (drift_amount * (1.0 - reveal));
+
+    vec3  tex_coords = niri_geo_to_tex * vec3(displaced_uv, 1.0);
+    vec4  color      = texture2D(niri_tex, tex_coords.st);
+
+    float alpha = smoothstep(0.0, 0.1, p);
+    return color * (reveal * alpha);
+}
+       	"
+    }
+}
+
+spawn-at-startup "foot" "--server"
+spawn-at-startup "swaybg" "-i" "/home/pedrito/Descargas/fondorojo.jpg"
+spawn-at-startup "waybar"
+prefer-no-csd
+
+
+hotkey-overlay {
+    skip-at-startup
+}
+
+screenshot-path "/tmp/Screenshot from %Y-%m-%d %H-%M-%S.png"
+
+window-rule {
+    match app-id="Firefox"
+    match app-id="badwolf"
+    open-maximized true
+    open-focused true
+}
+
+window-rule {
+    match app-id="footclient"
+    match app-id="kitty"
+    opacity 0.65
+}
+
+window-rule {
+    geometry-corner-radius 8
+    clip-to-geometry true
+}
+
+layer-rule {
+    match namespace="^wallpaper$"
+    place-within-backdrop true
+}
+
+overview {
+    zoom 0.4
+    workspace-shadow {
+	off
+    }
+}
+
+gestures {
+    hot-corners {
+        off
+    }
+}
+
+binds {
+
+    Mod+Shift+Slash { show-hotkey-overlay; }
+    Mod+Return { spawn "footclient"; }
+    Mod+D { spawn "wofi" "--show" "drun"; }
+    Mod+N { spawn "brightnessctl" "set" "1"; }    
+    Mod+K { spawn "kitty"; }
+    Mod+B { spawn "badwolf"; }
+    Mod+Shift+B { spawn "footclient" "btop"; }   
+    Mod+Shift+N { spawn "footclient" "ncmpcpp"; }   
+    Mod+C { spawn "footclient" "cava"; }
+    Mod+Shift+L { spawn "firefox"; }    
+    Mod+Shift+E { spawn "wlogout"; }
+    Mod+Shift+Z { spawn "sudo" "zzz"; }
+    
+    Super+Alt+S allow-when-locked=true hotkey-overlay-title=null { spawn-sh "pkill orca || exec orca"; }
+
+    XF86AudioRaiseVolume { spawn "amixer" "set" "Master" "5%+"; }
+    XF86AudioLowerVolume { spawn "amixer" "set" "Master" "5%-"; }
+    XF86AudioMute        { spawn "amixer" "set" "Master" "toggle"; }
+
+    XF86AudioPlay        allow-when-locked=true { spawn-sh "playerctl play-pause"; }
+    XF86AudioStop        allow-when-locked=true { spawn-sh "playerctl stop"; }
+    XF86AudioPrev        allow-when-locked=true { spawn-sh "playerctl previous"; }
+    XF86AudioNext        allow-when-locked=true { spawn-sh "playerctl next"; }
+
+    XF86MonBrightnessUp allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "+10%"; }
+    XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "10%-"; }
+
+    Mod+O repeat=false { toggle-overview; }
+    Mod+0 repeat=false { toggle-overview; }    
+    Mod+Q repeat=false { close-window; }
+
+    Mod+Left  { focus-column-left; }
+    Mod+Down  { focus-window-down; }
+    Mod+Up    { focus-window-up; }
+    Mod+Right { focus-column-right; }
+    Mod+H     { focus-column-left; }
+    Mod+J     { focus-window-down; }
+    Mod+L     { focus-column-right; }
+
+    Mod+Ctrl+Left  { move-column-left; }
+    Mod+Ctrl+Down  { move-window-down; }
+    Mod+Ctrl+Up    { move-window-up; }
+    Mod+Ctrl+Right { move-column-right; }
+    Mod+Ctrl+H     { move-column-left; }
+    Mod+Ctrl+J     { move-window-down; }
+    Mod+Ctrl+K     { move-window-up; }
+    Mod+Ctrl+L     { move-column-right; }
+    Mod+F          { maximize-column; }    
+
+    Mod+Home { focus-column-first; }
+    Mod+End  { focus-column-last; }
+    Mod+Ctrl+Home { move-column-to-first; }
+    Mod+Ctrl+End  { move-column-to-last; }
+
+    Mod+Shift+Left  { focus-monitor-left; }
+    Mod+Shift+Down  { focus-monitor-down; }
+    Mod+Shift+Up    { focus-monitor-up; }
+    Mod+Shift+Right { focus-monitor-right; }
+    Mod+Shift+H     { focus-monitor-left; }
+    Mod+Shift+J     { focus-monitor-down; }
+    Mod+Shift+K     { focus-monitor-up; }
+
+    Mod+Shift+Ctrl+Left  { move-column-to-monitor-left; }
+    Mod+Shift+Ctrl+Down  { move-column-to-monitor-down; }
+    Mod+Shift+Ctrl+Up    { move-column-to-monitor-up; }
+    Mod+Shift+Ctrl+Right { move-column-to-monitor-right; }
+    Mod+Shift+Ctrl+H     { move-column-to-monitor-left; }
+    Mod+Shift+Ctrl+J     { move-column-to-monitor-down; }
+    Mod+Shift+Ctrl+K     { move-column-to-monitor-up; }
+    Mod+Shift+Ctrl+L     { move-column-to-monitor-right; }
+
+    Mod+Page_Down      { focus-workspace-down; }
+    Mod+Page_Up        { focus-workspace-up; }
+    Mod+U              { focus-workspace-down; }
+    Mod+I              { focus-workspace-up; }
+    Mod+Ctrl+Page_Down { move-column-to-workspace-down; }
+    Mod+Ctrl+Page_Up   { move-column-to-workspace-up; }
+    Mod+Ctrl+U         { move-column-to-workspace-down; }
+    Mod+Ctrl+I         { move-column-to-workspace-up; }
+
+    Mod+Shift+Page_Down { move-workspace-down; }
+    Mod+Shift+Page_Up   { move-workspace-up; }
+    Mod+Shift+U         { move-workspace-down; }
+    Mod+Shift+I         { move-workspace-up; }
+
+    Mod+WheelScrollDown      cooldown-ms=150 { focus-workspace-down; }
+    Mod+WheelScrollUp        cooldown-ms=150 { focus-workspace-up; }
+    Mod+Ctrl+WheelScrollDown cooldown-ms=150 { move-column-to-workspace-down; }
+    Mod+Ctrl+WheelScrollUp   cooldown-ms=150 { move-column-to-workspace-up; }
+
+    Mod+WheelScrollRight      { focus-column-right; }
+    Mod+WheelScrollLeft       { focus-column-left; }
+    Mod+Ctrl+WheelScrollRight { move-column-right; }
+    Mod+Ctrl+WheelScrollLeft  { move-column-left; }
+
+    Mod+Shift+WheelScrollDown      { focus-column-right; }
+    Mod+Shift+WheelScrollUp        { focus-column-left; }
+    Mod+Ctrl+Shift+WheelScrollDown { move-column-right; }
+    Mod+Ctrl+Shift+WheelScrollUp   { move-column-left; }
+
+    Mod+1 { focus-workspace 1; }
+    Mod+2 { focus-workspace 2; }
+    Mod+3 { focus-workspace 3; }
+    Mod+4 { focus-workspace 4; }
+    Mod+5 { focus-workspace 5; }
+    Mod+6 { focus-workspace 6; }
+    Mod+7 { focus-workspace 7; }
+    Mod+8 { focus-workspace 8; }
+    Mod+9 { focus-workspace 9; }
+    Mod+Ctrl+1 { move-column-to-workspace 1; }
+    Mod+Ctrl+2 { move-column-to-workspace 2; }
+    Mod+Ctrl+3 { move-column-to-workspace 3; }
+    Mod+Ctrl+4 { move-column-to-workspace 4; }
+    Mod+Ctrl+5 { move-column-to-workspace 5; }
+    Mod+Ctrl+6 { move-column-to-workspace 6; }
+    Mod+Ctrl+7 { move-column-to-workspace 7; }
+    Mod+Ctrl+8 { move-column-to-workspace 8; }
+    Mod+Ctrl+9 { move-column-to-workspace 9; }
+
+    Mod+Comma  { consume-window-into-column; }
+    Mod+Period { expel-window-from-column; }
+
+    Mod+R { switch-preset-column-width; }
+    Mod+Shift+R { switch-preset-window-height; }
+    Mod+Ctrl+R { reset-window-height; }
+    Mod+Shift+F { fullscreen-window; }
+
+    Mod+Ctrl+F { expand-column-to-available-width; }
+
+    Mod+Ctrl+C { center-visible-columns; }
+
+    Mod+Minus { set-column-width "-10%"; }
+    Mod+Equal { set-column-width "+10%"; }
+
+    Mod+Shift+Minus { set-window-height "-10%"; }
+
+    Mod+V       { toggle-window-floating; }
+    Mod+Shift+V { switch-focus-between-floating-and-tiling; }
+
+    Mod+W { toggle-column-tabbed-display; }
+
+
+    Print { screenshot; }
+    Ctrl+Print { screenshot-screen; }
+    Alt+Print { screenshot-window; }
+
+    Mod+Escape allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }
+
+    Ctrl+Alt+Delete { quit; }
+
+    Mod+Shift+P { power-off-monitors; }
+}

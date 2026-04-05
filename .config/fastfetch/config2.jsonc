@@ -1,0 +1,109 @@
+{
+  "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
+  "logo": {
+    "source": "void2_small",
+    "color": {
+      "1": "green",
+      "2": "white"
+    },
+    "padding": {
+        "top": 3
+    },
+  },
+  "display": {
+    "separator": " │ ",
+    "bar": {
+      "char": {
+        "elapsed": "=", // █░
+        "total": "-"
+      },
+      "width": 13
+    },
+    "percent": {  
+      "type": 15
+    }
+  },
+  "modules": [
+    {
+      "type": "title",
+      "format": "{6} {7} {8}"
+    },
+    {
+      "type": "custom",
+      "format": "\u001b[32m╭──────────────────────────────────────────╮"
+    },
+    {// 
+      "type": "os",
+      "key": "{#green}│ {#green} OS       ",
+      "format": "{2}                        {#cyan}│",
+      "keyColor": "green"
+    },
+    {
+        "type": "wm",
+        "key": "{#green}│ {#green} WM       ",
+        "format": "{2}                        {#cyan}│"
+    },
+    {
+      "type": "terminal",
+      "key": "{#green}│ {#green} Terminal ",
+      "format": "kitty                       {#cyan}│"
+    },
+    {
+      "type": "shell",
+      "key": "{#green}│ {#green} Shell    ",
+      "format": "{1}                         {#cyan}│",
+      "keyColor": "31"
+    },
+    {
+      "type": "custom",
+      "format": "\u001b[32m╰──────────────────────────────────────────╯"
+    },
+    "break",
+    {
+        "type": "host",
+        "format": "{#green}{5} {1}",
+        "key": "{#green}  ",
+        "keyColor": "33"
+    },
+    {
+      "type": "custom",
+      "format": "\u001b[32m╭──────────────────────────────────────────╮"
+    },
+    { // "format": "{1} @ {7}",
+      "type": "cpu",
+      "format": "Intel i7-1185G7 @4.80 GHz    {#green}│",
+      "key": "{#green}│ {#green} CPU     "
+    },
+    {
+      "type": "gpu",
+      "format": "{1} {2}       {#green}│",
+      "key": "{#green}│ {#green} GPU     "
+    },
+    {
+      "type": "memory",
+      "key": "{#green}│ {#green} Memory  ",
+      "format": "{4}            {#green}│"
+    },
+    {
+      "type": "disk",
+      "key": "{#green}│ {#green} Disk    ",
+      "folders": "/",
+      "format": "{13}            {#green}│"
+    },
+    {
+      "type": "battery",
+      "key": "{#green}│ {#green} Battery ",
+      "format": "{10}            {#green}│"
+    },
+    {
+      "type": "disk",
+      "key": "{#green}│ {#green} OS Age  ",
+      "folders": "/",
+      "format": "{days} days                       {#green}│"
+    },
+    {
+      "type": "custom",
+      "format": "\u001b[32m╰──────────────────────────────────────────╯"
+    },
+  ]
+}

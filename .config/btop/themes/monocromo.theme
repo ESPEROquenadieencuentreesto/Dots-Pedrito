@@ -1,0 +1,36 @@
+# Colores de texto y gráficos (Blanco y Negro)
+theme[main_bg]="#111111"
+theme[main_fg]="#ffffff"
+theme[title]="#ffffff"
+theme[hi_fg]="#ffffff"
+theme[selected_bg]="#45475a"
+theme[selected_fg]="#ffffff"
+theme[inactive_fg]="#444444"
+
+# Gráficos de CPU y Memoria (Escala de grises)
+theme[cpu_box]="#ffffff"
+theme[mem_box]="#ffffff"
+theme[net_box]="#ffffff"
+theme[proc_box]="#ffffff"
+
+# Degradados de las barras (Blanco a Gris oscuro)
+theme[proc_misc]="#ffffff"
+theme[cpu_start]="#ffffff"
+theme[cpu_mid]="#eeeeee"
+theme[cpu_end]="#aaaaaa"
+
+theme[free_start]="#ffffff"
+theme[free_mid]="#eeeeee"
+theme[free_end]="#aaaaaa"
+
+theme[cached_start]="#ffffff"
+theme[cached_mid]="#eeeeee"
+theme[cached_end]="#aaaaaa"
+
+theme[available_start]="#ffffff"
+theme[available_mid]="#eeeeee"
+theme[available_end]="#aaaaaa"
+
+theme[used_start]="#ffffff"
+theme[used_mid]="#eeeeee"
+theme[used_end]="#aaaaaa"

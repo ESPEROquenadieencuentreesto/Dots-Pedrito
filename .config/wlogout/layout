@@ -1,0 +1,37 @@
+	{
+	    "label" : "lock",
+	    "action" : "sudo zzz",
+	    "text" :"LOCK",
+	    "keybind" : "l"
+	}
+	{
+	    "label" : "logout",
+	    "action" : "niri msg action quit",
+	    "text" :"LOGOUT",
+	   	"keybind" : "e"
+	}
+	{
+	    "label" : "suspend",
+	    "action" : "sudo zzz",
+	    "text" :"SUSPEND",
+	   	"keybind" : "s"
+	}
+	{
+	    "label" : "hibernate",
+	    "action" : "sudo zzz",
+	    "text" :"HIBERNATE",
+	   	"keybind" : "h"
+	}
+	{
+	    "label" : "shutdown",
+	    "action" : "sudo poweroff",
+	    "text" :"SHUTDOWN",
+	   	"keybind" : "u"
+	}
+	{
+	    "label" : "reboot",
+	    "action" : "sudo reboot",
+	    "text" :"REBOOT",
+	   	"keybind" : "r"
+	    
+	}

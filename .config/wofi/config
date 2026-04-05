@@ -1,0 +1,15 @@
+show=drun
+width=400
+height=300
+always_parse_dot_desktop=true
+location=center
+show_generic=true
+prompt=Search...
+filter_rate=100
+allow_images=true
+allow_markup=true
+no_actions=true
+halign=fill
+no_actions=true
+orientation=vertical
+content_type=application/x-desktop

@@ -1,0 +1,12 @@
+/* BLANCO PIBE */
+
+@define-color module-bg rgba(0, 0, 0, 0.65); 
+@define-color tooltip-bg #1a1a1a;
+@define-color inactive #444444;
+@define-color fg #ffffff;      
+@define-color workspace-fg @fg;
+
+@define-color red #ff3333;
+@define-color blue #ffffff;
+@define-color yellow #f1c40f;   
+@define-color green #ffffff;

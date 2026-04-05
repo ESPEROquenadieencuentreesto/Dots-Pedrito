@@ -1,0 +1,128 @@
+{
+  "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
+  "logo": {
+    "source": "void",
+    "color": {
+      "1": "green",
+      "2": "white"
+    },
+    "padding": {
+        "top": 3
+    }
+  },
+  "modules": [
+    "break",
+    {
+      "type": "custom",
+      "format": "\u001b[32m┌────────────────────Hardware────────────────────┐"
+    },
+    {
+      "type": "host",
+      "key": " PC",
+      "keyColor": "green"
+    },
+    {
+      "type": "cpu",
+      "key": "│ ├",
+      "format": "11th Gen Intel Core i7-1185G7 @4.80 GHz",
+      "keyColor": "green"
+    },
+    {
+      "type": "gpu",
+      "key": "│ ├",
+      "detectionMethod": "pci",
+      "format": "Intel Iris Xe Graphics @1.35 Ghz",
+      "keyColor": "green"
+    },
+    {
+      "type": "display",
+      "key": "│ ├󱄄",
+      "keyColor": "green"
+    },
+    {
+      "type": "disk",
+      "key": "│ ├󰋊",
+      "keyColor": "green"
+    },
+    {
+      "type": "memory",
+      "key": "│ ├",
+      "keyColor": "green"
+    },
+    {
+      "type": "custom",
+      "format": "\u001b[32m└────────────────────────────────────────────────┘"
+    },
+    "break",
+    {
+      "type": "custom",
+      "format": "\u001b[32m┌────────────────────Software────────────────────┐"
+    },
+    {
+      "type": "OS",
+      "key": "",
+      "keyColor": "green",
+    },
+    {
+      "type": "kernel",
+      "key": "│ ├",
+      "keyColor": "green"
+    },
+    {
+      "type": "wm",
+      "key": "│ ├",
+      "keyColor": "green"
+    },
+    {
+      "type": "terminal",
+      "key": "│ ├",
+      "keyColor": "green"
+    },
+    {
+      "type": "shell",
+      "key": "│ ├λ",
+      "keyColor": "green"
+    },
+    {
+      "type": "packages",
+      "key": "│ ├󰏖",
+      "keyColor": "green"
+    },
+    {
+      "type": "terminalfont",
+      "key": "└ └",
+      "keyColor": "green"
+    },
+    {
+      "type": "custom",
+      "format": "\u001b[32m└────────────────────────────────────────────────┘"
+    },
+    "break",
+    {
+      "type": "custom",
+      "format": "\u001b[32m┌──────────────Age / Uptime / Update─────────────┐"
+    },
+    {
+      "type": "command",
+      "key": "󱦟 OS Age",
+      "keyColor": "green",
+      "text": "echo $(( ($(date +%s) - $(stat -c %W /)) / 86400 )) days"
+    },
+    {
+      "type": "uptime",
+      "key": "󱫐 Uptime",
+      "keyColor": "green"
+    },
+    {
+      "type": "command",
+      "key": " Update",
+      "keyColor": "magenta",
+      "text": "updated=$(omarchy-version-pkgs); echo \"$updated\""
+    },
+    {
+      "type": "custom",
+      "format": "\u001b[32m└────────────────────────────────────────────────┘"
+    },
+    "break"
+  ]
+}
