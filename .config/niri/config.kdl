@@ -1,82 +1,57 @@
 environment {
     QT_QPA_PLATFORM "wayland"
-    QT_QPA_PLATFORMTHEME "qt5c5:qt6ct"
+    QT_QPA_PLATFORMTHEME "qt5c:qt6ct"
     SDL_VIDEODRIVER "wayland"
     _JAVA_AWT_NONREPARENTING "1"
-    DISPLAY "0"
     WEBKIT_DISABLE_COMPOSITING_MODE "1"
     WEBKIT_FORCE_SANDBOX "0"
     GDK_BACKEND "wayland"
     MOZ_ENABLE_WAYLAND "1"
-    SDL_VIDEODRIVER "wayland"
     ELECTRON_OZONE_PLATFORM_HINT "wayland"
 }
 
 input {
-
     mod-key "Alt"
-
     keyboard {
         	xkb {
 	    		layout "us"
         	}
-
         numlock
     }
-    
-
     touchpad {
-        tap
-        dwt
-        natural-scroll
+    	tap
+    	dwt
+   	natural-scroll
+    	scroll-method "two-finger"
     }
-
-    mouse {
-    }
-
     trackpoint {
     }
-	warp-mouse-to-focus
-
+    warp-mouse-to-focus
 }
 
 output "eDP-1" {
-
     mode "1920x1080@47.999"
     scale 1
     transform "normal"
     position x=1280 y=0
-
 }
 
 layout {
-
     gaps 10
     center-focused-column "never"
     background-color "transparent"    
-
     preset-column-widths {
         proportion 0.33333
         proportion 0.5
         proportion 0.66667
     }
-
     focus-ring {
 	off
-        width 0
-        inactive-color "#505050"
     }
-
     border {
-        off
-        width 0
-        active-color "#ffc87f"
-        inactive-color "#505050"
-
-        urgent-color "#9b0000"
-    }
-
-    struts {
+        width 3
+        active-color "#ffffff"
+        inactive-color "#666666"
     }
 }
 
@@ -87,163 +62,147 @@ cursor {
 
 animations {
 
-    slowdown 2.0
+    slowdown 1
     workspace-switch {
         spring damping-ratio=1.0 stiffness=1000 epsilon=0.0001
     }
-
     screenshot-ui-open {
         duration-ms 500
         curve "ease-out-quad"
     }
-
     window-close{
 	duration-ms 800
 	curve "ease-out-cubic"
 	custom-shader r"
-vec4 hash4(vec2 i) {
-    vec4 p = vec4(
+	vec4 hash4(vec2 i) {
+        vec4 p = vec4(
         dot(i,               vec2(127.1, 311.7)),
         dot(i + vec2(1.,0.), vec2(127.1, 311.7)),
         dot(i + vec2(0.,1.), vec2(127.1, 311.7)),
         dot(i + vec2(1.,1.), vec2(127.1, 311.7))
-    );
-    return fract(sin(p) * 43758.5453);
-}
+        );
+        return fract(sin(p) * 43758.5453);
+	}
 
-float noise(vec2 p) {
-    vec2 i = floor(p);
-    vec2 f = fract(p);
-    f = f * f * (3.0 - 2.0 * f);
-    vec4 h = hash4(i);
-    return mix(mix(h.x, h.y, f.x),
+	float noise(vec2 p) {
+    	vec2 i = floor(p);
+    	vec2 f = fract(p);
+    	f = f * f * (3.0 - 2.0 * f);
+    	vec4 h = hash4(i);
+    	return mix(mix(h.x, h.y, f.x),
                mix(h.z, h.w, f.x), f.y);
-}
+	}
 
-float fbm(vec2 p) {
-    float v  = 0.5    * noise(p);          p *= 2.0;
+	float fbm(vec2 p) {
+    	float v  = 0.5    * noise(p);          p *= 2.0;
           v += 0.25   * noise(p);          p *= 2.0;
           v += 0.125  * noise(p);          p *= 2.0;
           v += 0.0625 * noise(p);
-    return v;
-}
+    	return v;
+	}
 
-vec4 close_color(vec3 coords_geo, vec3 size_geo) {
-    float p    = niri_clamped_progress;
-    vec2  uv   = coords_geo.xy;
-    float seed = niri_random_seed * 100.0;
+	vec4 close_color(vec3 coords_geo, vec3 size_geo) {
+    	float p    = niri_clamped_progress;
+    	vec2  uv   = coords_geo.xy;
+    	float seed = niri_random_seed * 100.0;
 
-    float particle_noise = fbm(uv * 8.0 + seed);
+ 	   float particle_noise = fbm(uv * 8.0 + seed);
+	
+	  vec4  fh         = hash4(floor(uv * 60.0 + seed));
+   	 float fine_noise = fh.x;
 
-    vec4  fh         = hash4(floor(uv * 60.0 + seed));
-    float fine_noise = fh.x;
-
-    float direction_bias     = uv.x * 0.4 + (1.0 - uv.y) * 0.4;
-    float dissolve_threshold = particle_noise * 0.5
+   	 float direction_bias     = uv.x * 0.4 + (1.0 - uv.y) * 0.4;
+   	 float dissolve_threshold = particle_noise * 0.5
                              + fine_noise     * 0.2
                              + direction_bias;
 
-    float remain          = 1.0 - smoothstep(dissolve_threshold - 0.15,
+    	float remain          = 1.0 - smoothstep(dissolve_threshold - 0.15,
                                              dissolve_threshold + 0.15,
                                              p * 1.6);
-    float dissolved_amount = 1.0 - remain;
-
-    const vec2 DRIFT_DIR  = vec2(0.70710678, -0.70710678);
-    float drift_strength  = dissolved_amount * p * p * 0.12;
-
-    vec4  dh         = hash4(floor(uv * 40.0 + seed + 7.0));
-    float drift_rand = dh.x;
-
-    vec2 drift_offset = DRIFT_DIR * (drift_strength * (0.6 + drift_rand * 0.8));
-
-    float turb     = fbm(uv * 12.0 + seed + p * 4.0) - 0.5;
-    drift_offset  += vec2(turb, turb * 0.7) * (dissolved_amount * p * 0.03);
-
-    vec2 displaced_uv = uv + drift_offset;
-
-    vec3 tex_coords  = niri_geo_to_tex * vec3(displaced_uv, 1.0);
-    vec4 color       = texture2D(niri_tex, tex_coords.st);
-
-    float dust_life  = smoothstep(0.0, 0.3, dissolved_amount) *
-                       smoothstep(1.0, 0.5, dissolved_amount);
-    float dust_alpha = dust_life * (1.0 - p) * 0.6;
-
-    vec3 base_tex    = niri_geo_to_tex * vec3(uv, 1.0);
-    vec4 base_color  = texture2D(niri_tex, base_tex.st);
-
-    vec4 final_color = base_color * remain + color * dust_alpha;
-
-    float tail = smoothstep(1.0, 0.85, p);
-    return final_color * tail;
-}
-	"
-}
+   	 float dissolved_amount = 1.0 - remain;
+   	 const vec2 DRIFT_DIR  = vec2(0.70710678, -0.70710678);
+   	 float drift_strength  = dissolved_amount * p * p * 0.12;
+   	 vec4  dh         = hash4(floor(uv * 40.0 + seed + 7.0));
+   	 float drift_rand = dh.x;
+	 vec2 drift_offset = DRIFT_DIR * (drift_strength * (0.6 + drift_rand * 0.8));
+   	 float turb     = fbm(uv * 12.0 + seed + p * 4.0) - 0.5;
+   	 drift_offset  += vec2(turb, turb * 0.7) * (dissolved_amount * p * 0.03);
+	 vec2 displaced_uv = uv + drift_offset;
+   	 vec3 tex_coords  = niri_geo_to_tex * vec3(displaced_uv, 1.0);
+   	 vec4 color       = texture2D(niri_tex, tex_coords.st);
+   	 float dust_life  = smoothstep(0.0, 0.3, dissolved_amount) * smoothstep(1.0, 0.5, dissolved_amount);
+   	 float dust_alpha = dust_life * (1.0 - p) * 0.6;
+   	 vec3 base_tex    = niri_geo_to_tex * vec3(uv, 1.0);
+   	 vec4 base_color  = texture2D(niri_tex, base_tex.st);
+	 vec4 final_color = base_color * remain + color * dust_alpha;
+   	 float tail = smoothstep(1.0, 0.85, p);
+   	 return final_color * tail;
+	}
+      "
+    }
 
     window-open {
         duration-ms 800
         curve "ease-out-cubic"
         custom-shader r"
-vec4 hash4(vec2 i) {
-    vec4 p = vec4(
+	vec4 hash4(vec2 i) {
+    	vec4 p = vec4(
         dot(i,               vec2(127.1, 311.7)),
         dot(i + vec2(1.,0.), vec2(127.1, 311.7)),
         dot(i + vec2(0.,1.), vec2(127.1, 311.7)),
         dot(i + vec2(1.,1.), vec2(127.1, 311.7))
-    );
-    return fract(sin(p) * 43758.5453);
-}
+    	);
+    	return fract(sin(p) * 43758.5453);
+	}
 
-float noise(vec2 p) {
-    vec2 i = floor(p);
-    vec2 f = fract(p);
-    f = f * f * (3.0 - 2.0 * f);
-    vec4 h = hash4(i);
-    return mix(mix(h.x, h.y, f.x),
+	float noise(vec2 p) {
+    	vec2 i = floor(p);
+    	vec2 f = fract(p);
+    	f = f * f * (3.0 - 2.0 * f);
+    	vec4 h = hash4(i);
+    	return mix(mix(h.x, h.y, f.x),
                mix(h.z, h.w, f.x), f.y);
-}
+	}
 
-float fbm(vec2 p) {
-    float v  = 0.5    * noise(p);          p *= 2.0;
+	float fbm(vec2 p) {
+    	float v  = 0.5    * noise(p);      p *= 2.0;
           v += 0.25   * noise(p);          p *= 2.0;
           v += 0.125  * noise(p);          p *= 2.0;
           v += 0.0625 * noise(p);
-    return v;
-}
+  	  return v;
+	}
 
-vec4 open_color(vec3 coords_geo, vec3 size_geo) {
-    float p    = niri_clamped_progress;
-    vec2  uv   = coords_geo.xy;
-    float seed = niri_random_seed * 100.0;
-
-    float particle_noise = fbm(uv * 8.0 + seed);
-
-    vec4  fh         = hash4(floor(uv * 60.0 + seed));
-    float fine_noise = fh.x;
-
-    float direction_bias      = (1.0 - uv.x) * 0.4 + uv.y * 0.4;
-    float dissolve_threshold  = particle_noise * 0.5
+	vec4 open_color(vec3 coords_geo, vec3 size_geo) {
+    	float p    = niri_clamped_progress;
+    	vec2  uv   = coords_geo.xy;
+    	float seed = niri_random_seed * 100.0;
+    	float particle_noise = fbm(uv * 8.0 + seed);
+	    vec4  fh         = hash4(floor(uv * 60.0 + seed));
+    	float fine_noise = fh.x;
+	    float direction_bias      = (1.0 - uv.x) * 0.4 + uv.y * 0.4;
+    	float dissolve_threshold  = particle_noise * 0.5
                               + fine_noise     * 0.2
                               + direction_bias;
 
-    float reveal = smoothstep(dissolve_threshold - 0.15,
+    	float reveal = smoothstep(dissolve_threshold - 0.15,
                               dissolve_threshold + 0.15,
                               p * 1.6);
 
-    float rp           = 1.0 - p;
-    float drift        = rp * rp;
+    	float rp           = 1.0 - p;
+    	float drift        = rp * rp;
 
-    const vec2 DRIFT_DIR = vec2(0.70710678, -0.70710678);
-    float drift_amount   = drift * 0.08 * (particle_noise + fine_noise * 0.5);
-    vec2  displaced_uv   = uv + DRIFT_DIR * (drift_amount * (1.0 - reveal));
+    	const vec2 DRIFT_DIR = vec2(0.70710678, -0.70710678);
+    	float drift_amount   = drift * 0.08 * (particle_noise + fine_noise * 0.5);
+    	vec2  displaced_uv   = uv + DRIFT_DIR * (drift_amount * (1.0 - reveal));
 
-    vec3  tex_coords = niri_geo_to_tex * vec3(displaced_uv, 1.0);
-    vec4  color      = texture2D(niri_tex, tex_coords.st);
+    	vec3  tex_coords = niri_geo_to_tex * vec3(displaced_uv, 1.0);
+    	vec4  color      = texture2D(niri_tex, tex_coords.st);
 
-    float alpha = smoothstep(0.0, 0.1, p);
-    return color * (reveal * alpha);
-}
-       	"
-    }
+    	float alpha = smoothstep(0.0, 0.1, p);
+    	return color * (reveal * alpha);
+	}
+      "
+   }
 }
 
 spawn-at-startup "foot" "--server"
@@ -324,7 +283,6 @@ binds {
     XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "10%-"; }
 
     Mod+O repeat=false { toggle-overview; }
-    Mod+0 repeat=false { toggle-overview; }    
     Mod+Q repeat=false { close-window; }
 
     Mod+Left  { focus-column-left; }
