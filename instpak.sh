@@ -35,6 +35,11 @@ PACKAGES=(
     "firefox"
     "flatpak"
     "7zip"
+    "brightnessctl"
+    "powertop"
+    "swaybg"
+    "fzf"
+    "curl"
 )
 
 install_void() {
