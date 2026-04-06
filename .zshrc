@@ -30,6 +30,9 @@ alias matrix='unimatrix -s 97'
 alias fast='fastfetch'
 alias fastt='fastfetch --config ~/.config/fastfetch/config2.jsonc'
 alias spotify='flatpak run com.spotify.Client --enable-features=UseOzonePlatform --ozone-platform=wayland'
+alias mp3='z Mus && yt-dlp -f "ba" -x --audio-format mp3 --audio-quality 0 --embed-metadata --embed-thumbnail '
+alias silencio='echo "level 0" | sudo tee /proc/acpi/ibm/fan'
+alias ventiauto='echo "level auto" | sudo tee /proc/acpi/ibm/fan'
 
 PROMPT_EOL_MARK=""
 EDITOR=nano

@@ -221,7 +221,7 @@ screenshot-path "/tmp/Screenshot from %Y-%m-%d %H-%M-%S.png"
 
 window-rule {
     match app-id="Firefox"
-    match app-id="badwolf"
+    match app-id="thorium-browser"
     open-maximized true
     open-focused true
 }
@@ -229,7 +229,8 @@ window-rule {
 window-rule {
     match app-id="footclient"
     match app-id="kitty"
-    opacity 0.65
+    match app-id="Alacritty"
+    opacity 0.7
 }
 
 window-rule {
@@ -271,6 +272,7 @@ binds {
     Mod+Shift+Z { spawn "sudo" "zzz"; }
     Mod+Up { spawn "mpc" "seek" "+5"; }
     Mod+Down { spawn "mpc" "seek" "-5"; }
+    Mod+T { spawn "/opt/thorium-browser/thorium" "--ozone-platform=wayland"; }
     
     Super+Alt+S allow-when-locked=true hotkey-overlay-title=null { spawn-sh "pkill orca || exec orca"; }
 
